@@ -1,0 +1,16 @@
+{
+  "name": "acoustic-dome-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live noise level dashboard. Pulls realtime waveform data from a local MQTT broker.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "fake": "node fake-device.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mqtt": "^5.7.0",
+    "socket.io": "^4.7.5"
+  }
+}
