@@ -1,0 +1,13 @@
+# ===== Node =====
+node_modules/
+npm-debug.log*
+*.log
+
+# ===== Env / secrets =====
+.env
+.env.*
+!.env.example
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
