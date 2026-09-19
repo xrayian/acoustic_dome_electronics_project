@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acoustic Dome — Noise Monitoring System</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="layout">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <span class="mark" aria-hidden="true"><img src="icon.svg" alt=""></span>
+        <div class="brand-text">
+          <h1>ACOUSTIC DOME</h1>
+          <p>Noise Monitoring System</p>
+        </div>
+      </div>
+
+      <nav class="side-nav" aria-label="navigation">
+        <button class="nav-item" id="nav-overview" type="button">Fleet Overview</button>
+        <span class="nav-heading">Stations</span>
+        <div class="station-list" id="station-list"></div>
+      </nav>
+
+      <div class="side-foot">
+        <div class="pill" id="mqtt-badge">
+          <span class="pill-dot"></span>
+          <span class="pill-name">MQTT</span>
+          <span class="pill-state">offline</span>
+        </div>
+        <div class="pill" id="ws-badge">
+          <span class="pill-dot"></span>
+          <span class="pill-name">UPLINK</span>
+          <span class="pill-state">offline</span>
+        </div>
+        <div class="clock" id="clock">--:--:--</div>
+      </div>
+    </aside>
+
+    <!-- ============ CONTENT ============ -->
+    <div class="content">
+
+      <header class="topbar">
+        <nav class="crumbs" aria-label="breadcrumb">
+          <button class="crumb-btn" id="crumb-fleet" type="button">Fleet Overview</button>
+          <span class="crumb-sep" id="crumb-sep" hidden>/</span>
+          <span class="crumb-current" id="crumb-current" hidden></span>
+        </nav>
+        <div class="sysinfo">
+          <span class="sys-tag">v1.1</span>
+          <span class="sys-tag id-tag">FLEET</span>
+        </div>
+      </header>
+
+      <main>
+
+        <!-- ============ FLEET VIEW ============ -->
+        <section id="fleet-view">
+
+          <section class="kpi-row">
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Stations</span></div>
+              <span class="kpi-value" id="fleet-stations">--</span>
+              <span class="kpi-sub">live domes</span>
+            </article>
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Worst Level</span></div>
+              <span class="kpi-value level-value level-idle" id="fleet-worst">--</span>
+              <span class="kpi-sub" id="fleet-worst-sub">fleet status</span>
+            </article>
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Avg Signal</span></div>
+              <span class="kpi-value" id="fleet-rssi">--</span>
+              <span class="kpi-sub">dBm · fleet average</span>
+            </article>
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Total Frames</span></div>
+              <span class="kpi-value" id="fleet-frames">--</span>
+              <span class="kpi-sub">across fleet</span>
+            </article>
+          </section>
+
+          <section class="panel grid-head">
+            <span class="label">Station Fleet</span>
+            <span class="panel-note">click a dome for live waveform</span>
+          </section>
+
+          <section class="fleet-grid" id="fleet-grid"></section>
+
+          <section class="panel activity-panel">
+            <div class="panel-head">
+              <span class="label">System Activity</span>
+              <span class="panel-note">uplink &amp; station events</span>
+            </div>
+            <ul class="feed" id="sys-feed"></ul>
+          </section>
+
+        </section>
+
+        <!-- ============ FOCUS VIEW ============ -->
+        <section id="focus-view" hidden>
+
+          <section class="panel focus-bar">
+            <button class="btn-back" id="btn-back" type="button">&larr;&nbsp; Fleet</button>
+            <div class="focus-title">
+              <span class="focus-name" id="focus-name">--</span>
+              <span class="chip-live" id="focus-live">LIVE</span>
+            </div>
+            <span class="focus-meta">
+              <span class="panel-note" id="focus-ip"></span>
+              <span class="panel-note" id="focus-fw"></span>
+            </span>
+          </section>
+
+          <section class="kpi-row">
+            <article class="panel kpi kpi-level">
+              <div class="kpi-top">
+                <span class="label">Current Level</span>
+                <span class="chip-stream" id="focus-stream">IDLE</span>
+              </div>
+              <span class="kpi-value level-value level-idle" id="meter-label">WAITING</span>
+              <span class="kpi-sub">classification from the sampled window</span>
+            </article>
+
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Peak Amplitude</span></div>
+              <span class="kpi-value" id="meter-peak">--</span>
+              <div class="metric">
+                <div class="track"><div class="fill" id="meter-fill"></div></div>
+                <span class="kpi-sub" id="peak-pct">0%</span>
+              </div>
+            </article>
+
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Signal</span></div>
+              <span class="kpi-value" id="stat-rssi">--</span>
+              <span class="kpi-sub">dBm · wi-fi</span>
+              <div class="levelbar" id="rssi-bar">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </article>
+
+            <article class="panel kpi">
+              <div class="kpi-top"><span class="label">Uptime</span></div>
+              <span class="kpi-value" id="stat-uptime">--</span>
+              <span class="kpi-sub">frames&nbsp;<b id="stat-frames">--</b></span>
+            </article>
+          </section>
+
+          <section class="panel indicators">
+            <div class="panel-head">
+              <span class="label">Light Indicators</span>
+              <span class="panel-note">hardware state · GPIO 5 / 4 / 16</span>
+            </div>
+            <div class="ind-row">
+              <div class="ind" id="card-normal" style="--state:#22c55e">
+                <span class="ind-dot"></span>
+                <span class="ind-name">GREEN</span>
+                <span class="ind-state">Stable</span>
+              </div>
+              <div class="ind" id="card-moderate" style="--state:#eab308">
+                <span class="ind-dot"></span>
+                <span class="ind-name">YELLOW</span>
+                <span class="ind-state">Moderate</span>
+              </div>
+              <div class="ind" id="card-high" style="--state:#ef4444">
+                <span class="ind-dot"></span>
+                <span class="ind-name">RED</span>
+                <span class="ind-state">Critical</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="charts-row">
+            <article class="panel wave-panel">
+              <div class="panel-head">
+                <span class="label">Time Domain Waveform</span>
+                <div class="chips">
+                  <span class="chip">topic&nbsp;acoustic/&lt;id&gt;/waveform</span>
+                  <span class="chip">250 ms frame</span>
+                </div>
+              </div>
+              <canvas id="wave"></canvas>
+              <div class="axis">
+                <span>+FS</span>
+                <span>0</span>
+                <span>-FS</span>
+              </div>
+            </article>
+
+            <article class="panel log-panel">
+              <div class="panel-head">
+                <span class="label">Event Log</span>
+                <span class="panel-note">live station activity</span>
+              </div>
+              <ul class="feed" id="feed"></ul>
+            </article>
+          </section>
+
+        </section>
+
+      </main>
+
+      <footer class="footer">
+        <span>Acoustic Dome · environmental noise monitoring</span>
+        <span>fleet source · local MQTT broker</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
