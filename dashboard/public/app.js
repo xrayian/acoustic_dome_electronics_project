@@ -397,7 +397,8 @@ function openFocus(station) {
   }
   if (crumbSep) crumbSep.hidden = false;
 
-  document.getElementById('focus-name').textContent = station;
+  const liveEl = document.getElementById('focus-live');
+  if (liveEl) liveEl.hidden = false;
 
   const st = stations.get(station) || {};
   document.getElementById('focus-ip').textContent = st.ip ? 'ip · ' + st.ip : '';
@@ -420,11 +421,12 @@ function backToFleet() {
   const crumbSep = document.getElementById('crumb-sep');
   if (crumbCurrent) crumbCurrent.hidden = true;
   if (crumbSep) crumbSep.hidden = true;
+  const liveEl = document.getElementById('focus-live');
+  if (liveEl) liveEl.hidden = true;
   renderFeed('sys-feed', SYSTEM_KEY);
   renderStationList();
 }
 
-document.getElementById('btn-back')?.addEventListener('click', backToFleet);
 document.getElementById('nav-overview')?.addEventListener('click', backToFleet);
 document.getElementById('crumb-fleet')?.addEventListener('click', backToFleet);
 
@@ -466,10 +468,10 @@ function renderFocus() {
     document.getElementById(id).classList.toggle('active', st.level === i);
   });
 
-  const streamEl = document.getElementById('focus-stream');
-  if (streamEl) {
-    streamEl.textContent = st.online !== false ? 'STREAMING' : 'OFFLINE';
-    streamEl.className = 'chip-stream' + (st.online !== false ? '' : ' idle');
+  const liveEl = document.getElementById('focus-live');
+  if (liveEl) {
+    liveEl.textContent = st.online !== false ? 'STREAMING' : 'OFFLINE';
+    liveEl.hidden = st.online === false;
   }
 }
 

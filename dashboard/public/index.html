@@ -50,8 +50,11 @@
           <button class="crumb-btn" id="crumb-fleet" type="button">Fleet Overview</button>
           <span class="crumb-sep" id="crumb-sep" hidden>/</span>
           <span class="crumb-current" id="crumb-current" hidden></span>
+          <span class="chip-stream" id="focus-live" hidden>STREAMING</span>
         </nav>
         <div class="sysinfo">
+          <span class="panel-note" id="focus-ip"></span>
+          <span class="panel-note" id="focus-fw"></span>
           <span class="sys-tag">v1.1</span>
           <span class="sys-tag id-tag">FLEET</span>
         </div>
@@ -62,7 +65,12 @@
         <!-- ============ FLEET VIEW ============ -->
         <section id="fleet-view">
 
-          <section class="kpi-row">
+          <div class="view-head">
+            <h2>Fleet Monitor</h2>
+            <p>Live noise levels across all domes</p>
+          </div>
+
+          <section class="kpi-row" aria-label="Fleet summary">
             <article class="panel kpi">
               <div class="kpi-top"><span class="label">Stations</span></div>
               <span class="kpi-value" id="fleet-stations">--</span>
@@ -85,43 +93,35 @@
             </article>
           </section>
 
-          <section class="panel grid-head">
-            <span class="label">Station Fleet</span>
-            <span class="panel-note">click a dome for live waveform</span>
-          </section>
+          <div class="layout-row">
 
-          <section class="fleet-grid" id="fleet-grid"></section>
+            <section class="layout-main">
+              <div class="section-head">
+                <h3>Station Fleet</h3>
+                <span class="panel-note">click a dome for live waveform</span>
+              </div>
+              <div class="fleet-grid" id="fleet-grid"></div>
+            </section>
 
-          <section class="panel activity-panel">
-            <div class="panel-head">
-              <span class="label">System Activity</span>
-              <span class="panel-note">uplink &amp; station events</span>
-            </div>
-            <ul class="feed" id="sys-feed"></ul>
-          </section>
+            <aside class="panel activity-panel rail" aria-label="System activity">
+              <div class="panel-head">
+                <span class="label">System Activity</span>
+                <span class="panel-note">uplink &amp; station events</span>
+              </div>
+              <ul class="feed" id="sys-feed"></ul>
+            </aside>
+
+          </div>
 
         </section>
 
         <!-- ============ FOCUS VIEW ============ -->
         <section id="focus-view" hidden>
 
-          <section class="panel focus-bar">
-            <button class="btn-back" id="btn-back" type="button">&larr;&nbsp; Fleet</button>
-            <div class="focus-title">
-              <span class="focus-name" id="focus-name">--</span>
-              <span class="chip-live" id="focus-live">LIVE</span>
-            </div>
-            <span class="focus-meta">
-              <span class="panel-note" id="focus-ip"></span>
-              <span class="panel-note" id="focus-fw"></span>
-            </span>
-          </section>
-
           <section class="kpi-row">
             <article class="panel kpi kpi-level">
               <div class="kpi-top">
                 <span class="label">Current Level</span>
-                <span class="chip-stream" id="focus-stream">IDLE</span>
               </div>
               <span class="kpi-value level-value level-idle" id="meter-label">WAITING</span>
               <span class="kpi-sub">classification from the sampled window</span>
